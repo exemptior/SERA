@@ -11,53 +11,90 @@ window.addEventListener('load',function(){
 /* cursor removed */
 
 (function(){
-  var tabs = Array.prototype.slice.call(document.querySelectorAll('.nav-tab:not(.nav-tab-cta)'));
-  var closeTimers = new WeakMap();
+  function initHubLabels(){
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.nav-tab:not(.nav-tab-cta)'));
+    var closeTimers = new WeakMap();
 
-  tabs.forEach(function(tab){
-    var label = tab.querySelector('.nav-tab-label');
-    if(!label) return;
-    label.style.transition = 'none';
-    label.style.width = 'auto';
-    label.style.opacity = '0';
-    label.setAttribute('data-w', label.scrollWidth);
-    label.style.width = '0px';
-    label.offsetWidth;
-    label.style.transition = '';
-    label.style.opacity = '';
-  });
-  function openTab(tab){
-    var label = tab.querySelector('.nav-tab-label');
-    if(!label) return;
-    var t = closeTimers.get(tab);
-    if(t){ clearTimeout(t); closeTimers.delete(tab); }
-    label.classList.remove('retracting');
-    label.style.width = label.getAttribute('data-w') + 'px';
-    label.style.opacity = '1';
-  }
-  function closeTab(tab){
-    var label = tab.querySelector('.nav-tab-label');
-    if(!label) return;
-    label.classList.add('retracting');
-    label.style.width = '0px';
-    label.style.opacity = '0';
-    label.addEventListener('transitionend', function done(){
+    /* Measure each label's natural width with fonts loaded */
+    tabs.forEach(function(tab){
+      var label = tab.querySelector('.nav-tab-label');
+      if(!label) return;
+      label.style.transition = 'none';
+      label.style.width = 'auto';
+      label.style.opacity = '0';
+      var w = label.scrollWidth;
+      /* If fonts not loaded yet scrollWidth may be 0 — use offsetWidth fallback */
+      if(!w) w = label.offsetWidth;
+      label.setAttribute('data-w', w || 80);
+      label.style.width = '0px';
+      label.offsetWidth; /* force reflow */
+      label.style.transition = '';
+      label.style.opacity = '';
+    });
+
+    function openTab(tab){
+      var label = tab.querySelector('.nav-tab-label');
+      if(!label) return;
+      var t = closeTimers.get(tab);
+      if(t){ clearTimeout(t); closeTimers.delete(tab); }
       label.classList.remove('retracting');
-      label.removeEventListener('transitionend', done);
+      var w = label.getAttribute('data-w');
+      /* Re-measure if stored width was 0 */
+      if(!w || w === '0'){
+        label.style.transition='none';label.style.width='auto';
+        w = label.scrollWidth || label.offsetWidth || 80;
+        label.setAttribute('data-w', w);
+        label.style.width='0px';label.offsetWidth;label.style.transition='';
+      }
+      label.style.width = w + 'px';
+      label.style.opacity = '1';
+    }
+
+    function closeTab(tab){
+      var label = tab.querySelector('.nav-tab-label');
+      if(!label) return;
+      label.classList.add('retracting');
+      label.style.width = '0px';
+      label.style.opacity = '0';
+      label.addEventListener('transitionend', function done(){
+        label.classList.remove('retracting');
+        label.removeEventListener('transitionend', done);
+      });
+    }
+
+    tabs.forEach(function(tab){
+      tab.addEventListener('mouseenter', function(){
+        var t = closeTimers.get(this);
+        if(t){ clearTimeout(t); closeTimers.delete(this); }
+        openTab(this);
+      });
+      tab.addEventListener('mouseleave', function(){
+        var self = this;
+        var t = setTimeout(function(){ closeTab(self); }, 80);
+        closeTimers.set(self, t);
+      });
     });
   }
-  tabs.forEach(function(tab){
 
-    tab.addEventListener('mouseenter', function(){
-      var t = closeTimers.get(this);
-      if(t){ clearTimeout(t); closeTimers.delete(this); }
-      openTab(this);
-    });
-
-    tab.addEventListener('mouseleave', function(){
-      var self = this;
-      var t = setTimeout(function(){ closeTab(self); }, 80);
-      closeTimers.set(self, t);
+  /* Run on DOMContentLoaded, then re-measure on load when fonts are ready */
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initHubLabels);
+  } else {
+    initHubLabels();
+  }
+  /* Re-measure after fonts load to get accurate widths */
+  window.addEventListener('load', function(){
+    document.querySelectorAll('.nav-tab:not(.nav-tab-cta)').forEach(function(tab){
+      var label = tab.querySelector('.nav-tab-label');
+      if(!label) return;
+      var wasOpen = label.style.opacity === '1';
+      label.style.transition = 'none';
+      label.style.width = 'auto';
+      var w = label.scrollWidth || label.offsetWidth || 80;
+      label.setAttribute('data-w', w);
+      label.style.width = wasOpen ? w+'px' : '0px';
+      label.offsetWidth;
+      label.style.transition = '';
     });
   });
 })();
