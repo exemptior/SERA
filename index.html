@@ -100,7 +100,7 @@ window.addEventListener('load',function(){
 })();
 function switchTab(name){
 document.querySelectorAll('.pkg-tab').forEach((t,i)=>{
-t.classList.toggle('active',['bundle','webdesign','digital'][i]===name);
+t.classList.toggle('active',['packages','addons'][i]===name);
 });
 document.querySelectorAll('.pkg-panel').forEach(p=>{
 p.classList.toggle('active',p.id==='panel-'+name);
@@ -418,7 +418,68 @@ function prcSwitch(id){
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
 }
-</style></head><body><nav id="mainNav"><div class="nav-hub" id="navHub">
+
+/* ── CUSTOM CURSOR ── */
+*:not(input):not(textarea):not(select){cursor:none!important}
+#cur-dot{
+  position:fixed;top:0;left:0;
+  width:7px;height:7px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#fff8e8 0%,#d4b483 40%,#8a6830 100%);
+  box-shadow:0 1px 3px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.4);
+  pointer-events:none;z-index:9999;
+  will-change:transform;
+}
+#cur-ring{
+  position:fixed;top:0;left:0;
+  width:28px;height:28px;border-radius:50%;
+  border:1.5px solid rgba(184,153,106,.45);
+  background:radial-gradient(circle at 30% 30%,rgba(255,248,220,.06) 0%,transparent 70%);
+  pointer-events:none;z-index:9998;
+  will-change:transform;
+  transition:width .3s cubic-bezier(.16,1,.3,1),height .3s cubic-bezier(.16,1,.3,1),border-color .3s,box-shadow .3s;
+}
+body.cur-hover #cur-dot{
+  width:9px;height:9px;
+  background:radial-gradient(circle at 35% 35%,#fff8e0 0%,#e8c97a 35%,#b8892a 100%);
+  box-shadow:0 0 8px rgba(212,180,131,.7),0 1px 4px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.5);
+}
+body.cur-hover #cur-ring{width:42px;height:42px;border-color:rgba(212,180,131,.7);box-shadow:0 0 12px rgba(184,153,106,.25);}
+body.cur-click #cur-dot{width:5px;height:5px;background:radial-gradient(circle at 35% 35%,#ffffff 0%,#f0e0b0 60%,#c8a050 100%);box-shadow:0 0 14px rgba(255,240,180,.9);}
+body.cur-click #cur-ring{width:52px;height:52px;opacity:0;border-color:rgba(212,180,131,.9);}
+.cur-burst{position:fixed;pointer-events:none;z-index:9997;border-radius:50%;border:1px solid rgba(212,180,131,.5);animation:curBurst .5s cubic-bezier(.16,1,.3,1) forwards;}
+@keyframes curBurst{0%{width:8px;height:8px;opacity:.9;margin-left:-4px;margin-top:-4px;}100%{width:56px;height:56px;opacity:0;margin-left:-28px;margin-top:-28px;}}
+@media(hover:none){#cur-dot,#cur-ring{display:none}body{cursor:auto}}
+
+/* ── ADDON FLIP CARDS ── */
+.addon-flip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.addon-flip{perspective:1000px;height:260px;cursor:pointer;}
+.addon-flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.25,.46,.45,.94);}
+.addon-flip.flipped .addon-flip-inner{transform:rotateY(180deg);}
+.addon-front,.addon-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;border:1px solid rgba(200,200,200,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.6rem;}
+.addon-front{background:rgba(16,16,16,.98);gap:.8rem;transition:border-color .3s,box-shadow .3s;}
+.addon-flip:hover .addon-front{border-color:rgba(184,153,106,.2);box-shadow:0 8px 32px rgba(0,0,0,.4),0 0 0 1px rgba(184,153,106,.06);}
+.addon-back{background:rgba(18,14,8,.98);border-color:rgba(184,153,106,.18);transform:rotateY(180deg);align-items:flex-start;justify-content:flex-start;gap:.55rem;overflow-y:auto;overflow-x:hidden;padding-right:.8rem;}
+.addon-back::-webkit-scrollbar{width:3px;}.addon-back::-webkit-scrollbar-track{background:transparent;}.addon-back::-webkit-scrollbar-thumb{background:rgba(184,153,106,.25);border-radius:2px;}
+.addon-front-badge{position:absolute;top:.9rem;right:.9rem;background:var(--gold);color:var(--black);font-size:.46rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.2rem .6rem;border-radius:999px;}
+.addon-front-icon{width:56px;height:56px;border-radius:16px;border:1px solid rgba(184,153,106,.2);background:rgba(184,153,106,.05);display:flex;align-items:center;justify-content:center;transition:border-color .3s,background .3s,box-shadow .3s;}
+.addon-front-icon svg{width:24px;height:24px;}
+.addon-flip:hover .addon-front-icon{border-color:rgba(184,153,106,.4);background:rgba(184,153,106,.09);box-shadow:0 0 16px rgba(184,153,106,.15);}
+.addon-front-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:400;color:var(--gold);text-align:center;line-height:1.2;}
+.addon-front-hint{font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(200,200,200,.25);}
+.addon-back-category{font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:.1rem;}
+.addon-back-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:400;color:var(--white);margin-bottom:.4rem;line-height:1.2;}
+.addon-back-row{display:flex;flex-direction:column;gap:.15rem;width:100%;}
+.addon-back-label{font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);opacity:.75;}
+.addon-back-val{font-size:.67rem;color:rgba(200,200,200,.7);line-height:1.45;font-weight:300;}
+@media(max-width:900px){.addon-flip-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:599px){.addon-flip-grid{grid-template-columns:1fr;}.addon-flip{height:auto;perspective:none;}.addon-flip-inner{transform-style:flat;transition:none;}.addon-front{position:relative;inset:auto;border-radius:18px 18px 0 0;border-bottom:none;}.addon-back{position:relative;inset:auto;transform:none;border-radius:0 0 18px 18px;border-top:1px dashed rgba(184,153,106,.15);}.addon-flip.flipped .addon-flip-inner{transform:none;}}
+
+.guarantee-banner-pill{display:inline-flex;align-items:center;gap:.7rem;padding:.6rem 1.6rem;border-radius:999px;border:1px solid rgba(184,153,106,.18);background:rgba(184,153,106,.03);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);transition:border-color .4s,box-shadow .4s,color .4s;}
+.guarantee-banner-pill svg{transition:filter .4s;}
+.guarantee-banner-pill:hover{border-color:rgba(184,153,106,.5);color:var(--gold2);box-shadow:0 0 18px rgba(184,153,106,.22),0 0 40px rgba(160,80,160,.1),inset 0 0 14px rgba(184,153,106,.07);}
+.guarantee-banner-pill:hover svg{filter:drop-shadow(0 0 5px rgba(184,153,106,.8));}
+</style></head><body><div id="cur-dot"></div><div id="cur-ring"></div>
+<nav id="mainNav"><div class="nav-hub" id="navHub">
 
 <a href="#" class="nav-tab nav-tab-home">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
@@ -464,7 +525,7 @@ function prcSwitch(id){
 
 </div>
 </nav>
-<section id="hero"><div id="auroraCanvas"><div id="auroraA"></div><div id="auroraB"></div><div id="auroraSun"></div><div id="auroraAmb"></div></div><div class="hero-stage"><div class="hero-eyebrow">Digital Design &amp; Growth Agency</div><div class="hero-lockup"><div class="hero-lockup-row"><span class="hero-lockup-name">SERA</span></div><div class="hero-rule"></div><div class="hero-discipline">The online presence your business deserves.</div></div><p class="hero-hook">Premium web design, branding and content for your business to <span style="position:relative;display:inline-block;">actually<svg aria-hidden="true" style="position:absolute;left:0;bottom:-.18em;width:100%;height:.45em;overflow:visible;pointer-events:none;" viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M1 8 C10 5, 22 10, 35 7 C48 4, 58 11, 72 7 C82 4, 91 9, 99 6" fill="none" stroke="var(--gold)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="130" stroke-dashoffset="130" style="animation:sketchUnderline .8s cubic-bezier(.4,0,.2,1) .6s forwards"/></svg></span> grow.</p><div class="hero-ctas"><a href="#packages" class="hero-cta-primary"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>View Packages</a><a href="#process" class="hero-cta-secondary">How it works<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div></div><div class="hero-trust"><div class="hero-trust-pill"><div class="hero-trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="rgba(184,153,106,.2)"/></svg></div><div class="hero-trust-body"><div class="hero-trust-val"><span class="hero-trust-stars-inline">★★★★★</span> 4.9</div><div class="hero-trust-lbl">Client Rating</div></div></div><div class="hero-trust-pill"><div class="hero-trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="hero-trust-body"><div class="hero-trust-val">48hr</div><div class="hero-trust-lbl">First Draft</div></div></div><div class="hero-trust-pill"><div class="hero-trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></div><div class="hero-trust-body"><div class="hero-trust-val">∞ Revisions</div><div class="hero-trust-lbl">Until Perfect</div></div></div><div class="hero-trust-pill"><div class="hero-trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="hero-trust-body"><div class="hero-trust-val">SoCal</div><div class="hero-trust-lbl">Based &amp; Built</div></div></div><div class="hero-trust-pill"><div class="hero-trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="20 6 9 17 4 12"/></svg></div><div class="hero-trust-body"><div class="hero-trust-val">100%</div><div class="hero-trust-lbl">Custom Work</div></div></div></div></section><div class="marquee-wrap"><div class="marquee-track"><span class="marquee-item">Landing Pages<span class="marquee-dot"></span></span><span class="marquee-item">SEO Optimization<span class="marquee-dot"></span></span><span class="marquee-item">Short Form Content<span class="marquee-dot"></span></span><span class="marquee-item">Brand Photography<span class="marquee-dot"></span></span><span class="marquee-item">Seasonal Upgrades<span class="marquee-dot"></span></span><span class="marquee-item">Monthly Upkeep<span class="marquee-dot"></span></span><span class="marquee-item">High Converting Sites<span class="marquee-dot"></span></span><span class="marquee-item">Local Business Growth<span class="marquee-dot"></span></span><span class="marquee-item">Landing Pages<span class="marquee-dot"></span></span><span class="marquee-item">SEO Optimization<span class="marquee-dot"></span></span><span class="marquee-item">Short Form Content<span class="marquee-dot"></span></span><span class="marquee-item">Brand Photography<span class="marquee-dot"></span></span><span class="marquee-item">Seasonal Upgrades<span class="marquee-dot"></span></span><span class="marquee-item">Monthly Upkeep<span class="marquee-dot"></span></span><span class="marquee-item">High Converting Sites<span class="marquee-dot"></span></span><span class="marquee-item">Local Business Growth<span class="marquee-dot"></span></span></div></div>
+<section id="hero"><div id="auroraCanvas"><div id="auroraA"></div><div id="auroraB"></div><div id="auroraSun"></div><div id="auroraAmb"></div></div><div class="hero-stage"><div class="hero-eyebrow">Lead Generation for Local Businesses</div><div class="hero-lockup"><div class="hero-lockup-row"><span class="hero-lockup-name">SERA</span></div><div class="hero-rule"></div><div class="hero-discipline">More booked jobs. Done for you. Southern California.</div></div><p class="hero-hook">We build the system that gets local businesses found on Google, trusted by customers, and <span style="position:relative;display:inline-block;">booked solid.<svg aria-hidden="true" style="position:absolute;left:0;bottom:-.18em;width:100%;height:.45em;overflow:visible;pointer-events:none;" viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M1 8 C10 5, 22 10, 35 7 C48 4, 58 11, 72 7 C82 4, 91 9, 99 6" fill="none" stroke="var(--gold)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="130" stroke-dashoffset="130" style="animation:sketchUnderline .8s cubic-bezier(.4,0,.2,1) .6s forwards"/></svg></span></p><div class="hero-ctas"><a href="#packages" class="hero-cta-primary"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>View Packages</a><a href="#process" class="hero-cta-secondary">How it works<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div></div><div class="hero-trust"><div class="hero-trust-pill"><div class="hero-trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="rgba(184,153,106,.2)"/></svg></div><div class="hero-trust-body"><div class="hero-trust-val"><span class="hero-trust-stars-inline">★★★★★</span> 4.9</div><div class="hero-trust-lbl">Client Rating</div></div></div><div class="hero-trust-pill"><div class="hero-trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="hero-trust-body"><div class="hero-trust-val">90-Day</div><div class="hero-trust-lbl">Lead Guarantee</div></div></div><div class="hero-trust-pill"><div class="hero-trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></div><div class="hero-trust-body"><div class="hero-trust-val">100%</div><div class="hero-trust-lbl">Done For You</div></div></div><div class="hero-trust-pill"><div class="hero-trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="hero-trust-body"><div class="hero-trust-val">SoCal</div><div class="hero-trust-lbl">Local Businesses</div></div></div><div class="hero-trust-pill"><div class="hero-trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="20 6 9 17 4 12"/></svg></div><div class="hero-trust-body"><div class="hero-trust-val">100%</div><div class="hero-trust-lbl">Custom Work</div></div></div></div></section><div class="marquee-wrap"><div class="marquee-track"><span class="marquee-item">The Minimum<span class="marquee-dot"></span></span><span class="marquee-item">The Lead Engine<span class="marquee-dot"></span></span><span class="marquee-item">The Growth Machine<span class="marquee-dot"></span></span><span class="marquee-item">Google Business Profile<span class="marquee-dot"></span></span><span class="marquee-item">Local SEO<span class="marquee-dot"></span></span><span class="marquee-item">Meta Ads Management<span class="marquee-dot"></span></span><span class="marquee-item">Brand Photography<span class="marquee-dot"></span></span><span class="marquee-item">Short Form Reels<span class="marquee-dot"></span></span><span class="marquee-item">The Minimum<span class="marquee-dot"></span></span><span class="marquee-item">The Lead Engine<span class="marquee-dot"></span></span><span class="marquee-item">The Growth Machine<span class="marquee-dot"></span></span><span class="marquee-item">Google Business Profile<span class="marquee-dot"></span></span><span class="marquee-item">Local SEO<span class="marquee-dot"></span></span><span class="marquee-item">Meta Ads Management<span class="marquee-dot"></span></span><span class="marquee-item">Brand Photography<span class="marquee-dot"></span></span><span class="marquee-item">Short Form Reels<span class="marquee-dot"></span></span></div></div>
 <div class="sketch-connector" data-sk>
 <svg width="90" height="108" viewBox="0 0 90 108">
   <path class="skp"  stroke-width="2" d="M40 6 C42 20, 36 30, 44 44 C50 54, 44 62, 46 78 C46 84, 44 90, 42 96"/>
@@ -473,7 +534,7 @@ function prcSwitch(id){
 </svg>
 <span class="sk-label">what we do</span>
 </div>
-<div class="section-card"><section id="services"><div class="services-header reveal"><div class="section-tag">What We Do</div><h2 class="section-title">Every service,<br><em>purpose-built.</em></h2></div><div class="services-list"><div class="service-row reveal"><div class="srv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><div class="srv-body"><div class="srv-num">01</div><div class="srv-name">Landing Page &amp; Website</div><div class="srv-desc">Custom-built sites designed to convert — no templates, no shortcuts.</div></div><div class="srv-arrow">→</div></div><div class="service-row reveal reveal-delay-1"><div class="srv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M11 8v6M8 11h6"/></svg></div><div class="srv-body"><div class="srv-num">02</div><div class="srv-name">Basic SEO</div><div class="srv-desc">Get found when locals search for your services.</div></div><div class="srv-arrow">→</div></div><div class="service-row reveal reveal-delay-2"><div class="srv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div><div class="srv-body"><div class="srv-num">03</div><div class="srv-name">Brand Photography</div><div class="srv-desc">Professional brand photography with full editing and high-resolution delivery.</div></div><div class="srv-arrow">→</div></div><div class="service-row reveal reveal-delay-3"><div class="srv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="4"/><polygon points="10,8 16,12 10,16" fill="var(--gold)" stroke="none"/></svg></div><div class="srv-body"><div class="srv-num">04</div><div class="srv-name">Short Form Content</div><div class="srv-desc">4 Reels or TikToks per month — edited, captioned, and on-brand.</div></div><div class="srv-arrow">→</div></div><div class="service-row reveal reveal-delay-3"><div class="srv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></div><div class="srv-body"><div class="srv-num">05</div><div class="srv-name">Monthly Upkeep &amp; Seasonal Upgrades</div><div class="srv-desc">Keep your site fresh, fast, and updated year-round.</div></div><div class="srv-arrow">→</div></div></div></section></section></div>
+<div class="section-card"><section id="services"><div class="services-header reveal"><div class="section-tag">What We Do</div><h2 class="section-title">Every service,<br><em>purpose-built.</em></h2></div><div class="services-list"><div class="service-row reveal"><div class="srv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><div class="srv-body"><div class="srv-num">01</div><div class="srv-name">Custom Web Design</div><div class="srv-desc">High-converting sites built from scratch — no templates, no page builders, no shortcuts.</div></div><div class="srv-arrow">→</div></div><div class="service-row reveal reveal-delay-1"><div class="srv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="srv-body"><div class="srv-num">02</div><div class="srv-name">Google Business Profile &amp; Local SEO</div><div class="srv-desc">Get found in the map pack when locals search for your trade. Setup, optimization, and ongoing management.</div></div><div class="srv-arrow">→</div></div><div class="service-row reveal reveal-delay-2"><div class="srv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div><div class="srv-body"><div class="srv-num">03</div><div class="srv-name">Brand Photography</div><div class="srv-desc">Real photos of your business, your crew, your work. No stock. Fully edited and delivered in high resolution.</div></div><div class="srv-arrow">→</div></div><div class="service-row reveal reveal-delay-3"><div class="srv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="4"/><polygon points="10,8 16,12 10,16" fill="var(--gold)" stroke="none"/></svg></div><div class="srv-body"><div class="srv-num">04</div><div class="srv-name">Short-Form Video &amp; Reels</div><div class="srv-desc">4 professionally edited Reels per month — scripted, on-brand, and built to grow your local audience.</div></div><div class="srv-arrow">→</div></div><div class="service-row reveal reveal-delay-3"><div class="srv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="srv-body"><div class="srv-num">05</div><div class="srv-name">Meta Ads &amp; Paid Lead Generation</div><div class="srv-desc">Facebook and Instagram ad campaigns designed to drive inbound calls and form fills from local customers.</div></div><div class="srv-arrow">→</div></div><div class="service-row reveal reveal-delay-3"><div class="srv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></div><div class="srv-body"><div class="srv-num">06</div><div class="srv-name">Monthly Management &amp; Reporting</div><div class="srv-desc">Reputation management, citation upkeep, performance reports, and strategy calls — every month, on autopilot.</div></div><div class="srv-arrow">→</div></div></div></section></section></div>
 <div class="sketch-connector" data-sk>
 <svg width="90" height="110" viewBox="0 0 90 110">
   <path class="skp"  stroke-width="1.8" d="M70 6 C65 18, 50 24, 38 36 C26 48, 22 60, 26 80 C27 88, 28 92, 28 98"/>
@@ -485,352 +546,222 @@ function prcSwitch(id){
 <div class="section-card  section-card--wide"><section id="packages">
 
 <div class="reveal" style="margin-bottom:3rem;text-align:center;">
-  <div class="section-tag" style="justify-content:center;">Pricing</div>
-  <h2 class="section-title">Find your <em>perfect package.</em></h2>
-  <p class="section-desc" style="max-width:520px;margin:.8rem auto 0;">Every package is built around your business. No templates, no shortcuts — just results.</p>
+  <div class="section-tag" style="justify-content:center;">Our Packages</div>
+  <h2 class="section-title">Three tiers. <em>One promise.</em></h2>
+  <p class="section-desc" style="max-width:540px;margin:.8rem auto 0;">Every package is built around one thing — getting your business more customers. No templates, no fluff, no hidden fees.</p>
 </div>
 
+<!-- PACKAGE TABS -->
 <div class="prc-tabs reveal" id="prcTabs">
-  <button class="prc-tab active" onclick="prcSwitch('bundle')">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/></svg>
-    Bundle Packages
+  <button class="prc-tab active" onclick="prcSwitch('packages')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-4 0v2M8 7V5a2 2 0 00-4 0v2"/></svg>
+    Packages
   </button>
-  <button class="prc-tab" onclick="prcSwitch('web')">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-    Web Design
-  </button>
-  <button class="prc-tab" onclick="prcSwitch('content')">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="4"/><polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none"/></svg>
-    Content &amp; Shoots
+  <button class="prc-tab" onclick="prcSwitch('addons')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+    Add-Ons
   </button>
 </div>
 
-<div class="prc-panel active" id="prc-bundle">
-  <div class="prc-grid prc-grid-3" style="padding:1.4rem 0.2rem;">
+<!-- PACKAGES PANEL -->
+<div class="prc-panel active" id="prc-packages">
+  <div class="prc-grid prc-grid-3 reveal">
 
-    
-    <div class="prc-card pop-reveal reveal-delay-1">
-      <div class="prc-tier">Bundle 01</div>
-      <div class="prc-name">Starter</div>
-      <div class="prc-desc">For local businesses ready for their first real digital presence.</div>
-      <div class="prc-price-block">
-        <div class="prc-strike">$1,799</div>
-        <div class="prc-price">$1,199</div>
-        <div class="prc-cadence">setup + $599/mo</div>
-      </div>
-      <div class="prc-save">Save $600+ vs. buying separately</div>
+    <!-- FOUNDATION -->
+    <div class="prc-card">
+      <div class="prc-tier">Tier 01</div>
+      <div class="prc-name">The Minimum</div>
+      <div class="prc-desc">For the <strong style="color:var(--silver2)">business owner with no web presence</strong> who's losing customers to competitors they're better than. Your work speaks for itself — now let's make sure <strong style="color:var(--silver2)">Google says the same thing.</strong></div>
       <div class="prc-divider"></div>
       <ul class="prc-features">
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>1-page custom website</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Basic on-page SEO</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>2 revision rounds</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>$99/mo upkeep &amp; maintenance</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>2 short-form videos/mo</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Photography shoot included</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Custom single-page website</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Google Business Profile setup &amp; optimization</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Basic on-page SEO</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Citation &amp; directory listings (top 10)</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Review request system setup</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>30-day check-in call &amp; report</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Unlimited revisions until you love it</li>
       </ul>
-      <a href="#contact" class="prc-btn">Get Started</a>
+      <div class="prc-divider"></div>
+      <a href="#contact" class="prc-btn">Book a Discovery Call →</a>
     </div>
 
-    
-    <div class="prc-card prc-card--popular pop-reveal">
-      <div class="prc-popular-badge">
-        <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        Most Popular
-      </div>
-      <div class="prc-tier" style="color:var(--gold2)">Bundle 02</div>
-      <div class="prc-name">Growth</div>
-      <div class="prc-desc">For businesses ready to scale with a full digital stack.</div>
-      <div class="prc-price-block">
-        <div class="prc-strike">$2,799</div>
-        <div class="prc-price">$1,799</div>
-        <div class="prc-cadence">setup + $699/mo</div>
-      </div>
-      <div class="prc-save">Save $1,000+ vs. buying separately</div>
+    <!-- LEAD ENGINE — FEATURED -->
+    <div class="prc-card prc-card--popular" style="margin-top:-18px;margin-bottom:-18px;z-index:2;">
+      <div class="prc-popular-badge">Most Popular</div>
+      <div class="prc-tier" style="color:var(--gold);">Tier 02</div>
+      <div class="prc-name">The Lead Engine</div>
+      <div class="prc-desc">For the <strong style="color:var(--silver2)">established business owner</strong> who's busy on referrals but invisible to everyone else. You're leaving money on the table every month you're <strong style="color:var(--silver2)">not showing up when locals search.</strong></div>
       <div class="prc-divider"></div>
       <ul class="prc-features">
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>3–5 page custom website</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Basic on-page SEO</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>3 revision rounds</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>$149/mo upkeep &amp; maintenance</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>2 short-form + 1 YouTube/mo</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Photography shoot included</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Everything in The Minimum</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Full GBP management (posts, Q&amp;A, photos)</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Monthly review response &amp; reputation management</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Ongoing citation building &amp; cleanup</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>4 Instagram posts per month</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Local SEO optimization &amp; keyword tracking</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Monthly performance report &amp; strategy call</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Month-to-month — no contracts</li>
       </ul>
-      <a href="#contact" class="prc-btn prc-btn--gold">Get Started</a>
+      <div class="prc-divider"></div>
+      <div style="font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem;">✦ 90-Day Lead Guarantee</div>
+      <a href="#contact" class="prc-btn prc-btn--gold">Book a Discovery Call →</a>
     </div>
 
-    
-    <div class="prc-card prc-card--elite pop-reveal reveal-delay-2">
-      <div class="prc-elite-badge">♛ Royal Tier</div>
-      <div class="prc-tier" style="color:rgba(200,130,210,1)">Bundle 03</div>
-      <div class="prc-name">Elite</div>
-      <div class="prc-desc">For established brands that demand the full premium experience.</div>
-      <div class="prc-price-block">
-        <div class="prc-strike">$3,699</div>
-        <div class="prc-price prc-price--elite">$2,499</div>
-        <div class="prc-cadence">setup + $899/mo</div>
+    <!-- GROWTH MACHINE -->
+    <div class="prc-card prc-card--elite">
+      <div class="prc-elite-badge">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Full Scale
       </div>
-      <div class="prc-save">Save $1,200+ vs. buying separately</div>
+      <div class="prc-tier" style="color:rgba(200,130,210,1);">Tier 03</div>
+      <div class="prc-name">The Growth Machine</div>
+      <div class="prc-desc">For the <strong style="color:var(--silver2)">owner who's already winning</strong> and ready to pull away from the competition. Your competitors are catching up — <strong style="color:var(--silver2)">paid ads, content, and automation</strong> put real distance between you and everyone else.</div>
       <div class="prc-divider"></div>
       <ul class="prc-features">
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="rgba(200,130,210,1)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>5+ page custom website</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="rgba(200,130,210,1)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Advanced SEO</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="rgba(200,130,210,1)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Unlimited revisions</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="rgba(200,130,210,1)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>$299/mo upkeep &amp; maintenance</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="rgba(200,130,210,1)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>2 short-form + 1 YouTube/mo</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="rgba(200,130,210,1)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Photography shoot included</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(200,130,210,1)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Everything in The Lead Engine</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(200,130,210,1)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Meta Ads management (Facebook &amp; Instagram)</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(200,130,210,1)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>4 short-form video reels per month</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(200,130,210,1)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Monthly digital growth shoot (photo + video)</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(200,130,210,1)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>High-converting Meta ads landing page</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(200,130,210,1)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Email &amp; SMS follow-up automation</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(200,130,210,1)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Quarterly competitor gap analysis</li>
+        <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(200,130,210,1)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Bi-weekly strategy calls</li>
       </ul>
-      <a href="#contact" class="prc-btn prc-btn--elite">Get Started</a>
-    </div>
-
-  <div class="prc-swipe-hint">
-<svg width="48" height="36" viewBox="0 0 48 36">
-  
-  <path class="swipe-path" stroke-width="1.6"
-    d="M4 18 C8 16, 14 19, 20 17 C26 15, 32 19, 38 17 C41 16, 43 17, 44 18"/>
-  
-  <path class="swipe-head" stroke-width="1.5"
-    d="M38 12 C41 15, 45 18, 38 24"/>
-  <path class="swipe-head" stroke-width="1.2"
-    d="M40 11 C43 14, 47 18, 40 25" style="opacity:.6"/>
-</svg>
-<span class="swipe-label">swipe</span>
-</div>
-  </div>
-  <p class="prc-note">Photography shoot included in all bundles. <a href="#contact">Contact us</a> for custom quotes.</p>
-</div>
-
-<div class="prc-panel" id="prc-web">
-  <div class="prc-grid prc-grid-4" style="padding:1.4rem 0.2rem;">
-
-    <div class="prc-card pop-reveal">
-      <div class="prc-tier">Web 01</div>
-      <div class="prc-name">Base Site</div>
-      <div class="prc-desc">Single-page site, zero templates, built to convert.</div>
-      <div class="prc-price-block">
-        <div class="prc-price">$499<span class="prc-plus">+</span></div>
-        <div class="prc-cadence">one-time · no SEO</div>
-      </div>
       <div class="prc-divider"></div>
-      <ul class="prc-features">
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Custom layout — no templates</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>High-converting design</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Mobile responsive</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>2 revisions included</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>$59/mo upkeep option</li>
-        <li class="prc-dim"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--silver3)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>No SEO included</li>
-      </ul>
-      <a href="#contact" class="prc-btn">Get Started</a>
+      <a href="#contact" class="prc-btn prc-btn--elite">Book a Discovery Call →</a>
     </div>
 
-    <div class="prc-card pop-reveal reveal-delay-1">
-      <div class="prc-tier">Web 02</div>
-      <div class="prc-name">Starter Site</div>
-      <div class="prc-desc">1–3 custom pages with SEO foundation built in.</div>
-      <div class="prc-price-block">
-        <div class="prc-price">$899<span class="prc-plus">+</span></div>
-        <div class="prc-cadence">one-time · 1–3 pages</div>
-      </div>
-      <div class="prc-divider"></div>
-      <ul class="prc-features">
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>1–3 fully custom pages</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>High-converting layout</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Basic SEO included</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Mobile responsive</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>3 revisions included</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>$99/mo upkeep option</li>
-      </ul>
-      <a href="#contact" class="prc-btn">Get Started</a>
-    </div>
-
-    <div class="prc-card prc-card--popular pop-reveal reveal-delay-2">
-      <div class="prc-popular-badge">
-        <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        Most Popular
-      </div>
-      <div class="prc-tier" style="color:var(--gold2)">Web 03</div>
-      <div class="prc-name">Growth Site</div>
-      <div class="prc-desc">3–5 pages built to scale — the most popular choice.</div>
-      <div class="prc-price-block">
-        <div class="prc-price">$1,299<span class="prc-plus">+</span></div>
-        <div class="prc-cadence">one-time · 3–5 pages</div>
-      </div>
-      <div class="prc-divider"></div>
-      <ul class="prc-features">
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>3–5 fully custom pages</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>High-converting layouts</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Basic SEO included</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Mobile responsive</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>4 revisions included</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>$149/mo upkeep option</li>
-      </ul>
-      <a href="#contact" class="prc-btn prc-btn--gold">Get Started</a>
-    </div>
-
-    <div class="prc-card pop-reveal reveal-delay-3">
-      <div class="prc-best-badge">Best Value</div>
-      <div class="prc-tier">Web 04</div>
-      <div class="prc-name">Full Site</div>
-      <div class="prc-desc">5+ pages, advanced SEO, unlimited revisions. Everything.</div>
-      <div class="prc-price-block">
-        <div class="prc-price">$1,999<span class="prc-plus">+</span></div>
-        <div class="prc-cadence">one-time · 5+ pages</div>
-      </div>
-      <div class="prc-divider"></div>
-      <ul class="prc-features">
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>5+ fully custom pages</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>High-converting layouts</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Advanced SEO included</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Mobile responsive</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Unlimited revisions</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>$299/mo upkeep option</li>
-      </ul>
-      <a href="#contact" class="prc-btn">Get Started</a>
-    </div>
-
-  <div class="prc-swipe-hint">
-<svg width="48" height="36" viewBox="0 0 48 36">
-  
-  <path class="swipe-path" stroke-width="1.6"
-    d="M4 18 C8 16, 14 19, 20 17 C26 15, 32 19, 38 17 C41 16, 43 17, 44 18"/>
-  
-  <path class="swipe-head" stroke-width="1.5"
-    d="M38 12 C41 15, 45 18, 38 24"/>
-  <path class="swipe-head" stroke-width="1.2"
-    d="M40 11 C43 14, 47 18, 40 25" style="opacity:.6"/>
-</svg>
-<span class="swipe-label">swipe</span>
-</div>
-  </div>
-  <p class="prc-note">Photography available as an add-on. <a href="#contact">Ask about bundles</a> to save more.</p>
-</div>
-
-<div class="prc-panel" id="prc-content">
-  <div class="prc-grid prc-grid-4" style="padding:1.4rem 0.2rem;">
-
-    <div class="prc-card pop-reveal">
-      <div class="prc-tier">Shoot 01</div>
-      <div class="prc-name">Brand Video</div>
-      <div class="prc-desc">Full on-site brand shoot, professionally edited.</div>
-      <div class="prc-price-block">
-        <div class="prc-price">$1,200</div>
-        <div class="prc-cadence">one-time · on-site shoot</div>
-      </div>
-      <div class="prc-divider"></div>
-      <ul class="prc-features">
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Full brand video shoot</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Professional editing</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Color grade + audio mix</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>5-day turnaround</li>
-        <li class="prc-dim"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--silver3)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Photo add-on available</li>
-      </ul>
-      <a href="#contact" class="prc-btn">Book Now</a>
-    </div>
-
-    <div class="prc-card pop-reveal reveal-delay-1">
-      <div class="prc-tier">Shoot 02</div>
-      <div class="prc-name">Short-Form</div>
-      <div class="prc-desc">2 vertical videos, Reels &amp; TikTok ready.</div>
-      <div class="prc-price-block">
-        <div class="prc-price">$500</div>
-        <div class="prc-cadence">one-time · 2 videos</div>
-      </div>
-      <div class="prc-divider"></div>
-      <ul class="prc-features">
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>2 short-form vertical videos</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Reels &amp; TikTok formatted</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>On-brand editing &amp; captions</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>5-day turnaround</li>
-        <li class="prc-dim"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--silver3)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Photo add-on available</li>
-      </ul>
-      <a href="#contact" class="prc-btn">Book Now</a>
-    </div>
-
-    <div class="prc-card pop-reveal reveal-delay-1">
-      <div class="prc-tier">Shoot 03</div>
-      <div class="prc-name">YouTube Video</div>
-      <div class="prc-desc">On-location shoot, full edit, thumbnail included.</div>
-      <div class="prc-price-block">
-        <div class="prc-price">$1,500</div>
-        <div class="prc-cadence">one-time · shot &amp; edited</div>
-      </div>
-      <div class="prc-divider"></div>
-      <ul class="prc-features">
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>On-location shoot</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Full edit + color grade</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Thumbnail design included</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Captions &amp; chapters</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>5-day turnaround</li>
-      </ul>
-      <a href="#contact" class="prc-btn">Book Now</a>
-    </div>
-
-    <div class="prc-card prc-card--popular pop-reveal reveal-delay-2">
-      <div class="prc-popular-badge">
-        <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        Best Value
-      </div>
-      <div class="prc-tier" style="color:var(--gold2)">Shoot 04</div>
-      <div class="prc-name">Full Bundle</div>
-      <div class="prc-desc">Every service in one shoot. Drone coverage included.</div>
-      <div class="prc-price-block">
-        <div class="prc-price">$4,000</div>
-        <div class="prc-cadence">one-time · all 5 services</div>
-      </div>
-      <div class="prc-divider"></div>
-      <ul class="prc-features">
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Brand video</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>2 short-form verticals</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>YouTube video</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>10 edited stills</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>Drone coverage</li>
-        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>5-day turnaround</li>
-      </ul>
-      <a href="#contact" class="prc-btn prc-btn--gold">Book Now</a>
-    </div>
-
-  <div class="prc-swipe-hint">
-<svg width="48" height="36" viewBox="0 0 48 36">
-  
-  <path class="swipe-path" stroke-width="1.6"
-    d="M4 18 C8 16, 14 19, 20 17 C26 15, 32 19, 38 17 C41 16, 43 17, 44 18"/>
-  
-  <path class="swipe-head" stroke-width="1.5"
-    d="M38 12 C41 15, 45 18, 38 24"/>
-  <path class="swipe-head" stroke-width="1.2"
-    d="M40 11 C43 14, 47 18, 40 25" style="opacity:.6"/>
-</svg>
-<span class="swipe-label">swipe</span>
-</div>
   </div>
 
+  <!-- GUARANTEE BANNER -->
+  <div class="reveal" style="display:flex;justify-content:center;margin-bottom:2rem;">
+    <div class="guarantee-banner-pill">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" style="flex-shrink:0;filter:drop-shadow(0 0 5px rgba(184,153,106,.9));"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="rgba(184,153,106,.18)"/></svg>
+      <span>90-Day Guarantee — measurable leads or we work for free. No questions asked.</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" style="flex-shrink:0;filter:drop-shadow(0 0 5px rgba(184,153,106,.9));"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="rgba(184,153,106,.18)"/></svg>
+    </div>
+  </div>
   
+
+  <!-- TWO CTAs -->
+  <div class="reveal" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2.5rem;">
+    <a href="#contact" class="btn-primary">Book a Free Discovery Call</a>
+    <a href="#contact" class="btn-ghost">Get a Free Audit →</a>
+  </div>
+
+  <p class="prc-note" style="margin-top:1.5rem;">Not sure which package is right for you? <a href="#contact">Let's talk</a> — no pressure, no pitch.</p>
+</div>
+
+<!-- ADD-ONS PANEL -->
+<div class="prc-panel" id="prc-addons">
+  <div class="reveal" style="text-align:center;margin-bottom:2rem;">
+    <p style="font-size:.85rem;color:var(--silver3);line-height:1.75;max-width:540px;margin:0 auto;">Stack these onto any package to increase results without starting a new retainer.</p>
+  </div>
+
   <div class="prc-addons reveal">
-    <div class="prc-addons-header">
-      <div class="section-tag" style="margin-bottom:0;">Monthly Add-Ons</div>
-      <p style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;color:var(--silver2);margin-top:.3rem;">Keep the content flowing.</p>
+    <div class="addon-flip-grid">
+      <div class="addon-flip"><div class="addon-flip-inner">
+        <div class="addon-front">
+          <div class="addon-front-badge">Most Added</div>
+          <div class="addon-front-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.4"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/><circle cx="12" cy="13" r="1.5" fill="var(--gold)" stroke="none"/></svg></div>
+          <div class="addon-front-name">Digital Growth Shoot</div>
+          <div class="addon-front-hint">Tap to learn more</div>
+        </div>
+        <div class="addon-back">
+          <div class="addon-back-category">Content · Photography</div>
+          <div class="addon-back-title">Digital Growth Shoot</div>
+          <div class="addon-back-row"><span class="addon-back-label">Who it's for</span><span class="addon-back-val">Business owners who need real photos and video of their work, team, and brand — not stock images.</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">Why it works</span><span class="addon-back-val">Real photos of your work and crew build instant trust with customers before they ever pick up the phone.</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">What's included</span><span class="addon-back-val">On-site shoot · 8–12 fully edited photo + video assets · Brand-ready delivery within 5 days</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">Best paired with</span><span class="addon-back-val">The Minimum or any package without a shoot already included</span></div>
+        </div>
+      </div></div>
+      <div class="addon-flip"><div class="addon-flip-inner">
+        <div class="addon-front">
+          <div class="addon-front-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.4"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+          <div class="addon-front-name">Meta Ads Management</div>
+          <div class="addon-front-hint">Tap to learn more</div>
+        </div>
+        <div class="addon-back">
+          <div class="addon-back-category">Paid Advertising</div>
+          <div class="addon-back-title">Meta Ads Management</div>
+          <div class="addon-back-row"><span class="addon-back-label">Who it's for</span><span class="addon-back-val">Lead Engine or Growth Machine clients ready to add a paid channel on top of their organic growth.</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">Why it works</span><span class="addon-back-val">Paid ads put your business in front of the right local customers immediately — on top of what your organic presence is already doing.</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">What's included</span><span class="addon-back-val">Campaign strategy · Ad copy + creative · Audience targeting · Monthly optimization · You pay ad spend separately</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">Best paired with</span><span class="addon-back-val">The Lead Engine — adds a paid channel alongside your organic GBP and SEO</span></div>
+        </div>
+      </div></div>
+      <div class="addon-flip"><div class="addon-flip-inner">
+        <div class="addon-front">
+          <div class="addon-front-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.4"><rect x="2" y="2" width="20" height="20" rx="4"/><polygon points="10,8 16,12 10,16" fill="rgba(184,153,106,.3)" stroke="var(--gold)" stroke-width="1.2"/></svg></div>
+          <div class="addon-front-name">Short-Form Video Reels</div>
+          <div class="addon-front-hint">Tap to learn more</div>
+        </div>
+        <div class="addon-back">
+          <div class="addon-back-category">Social Media</div>
+          <div class="addon-back-title">Short-Form Video Reels</div>
+          <div class="addon-back-row"><span class="addon-back-label">Who it's for</span><span class="addon-back-val">Business owners who want a consistent social presence but have no time to film, edit, or post.</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">Why it works</span><span class="addon-back-val">Consistent short-form content keeps your brand visible, builds local recognition, and turns followers into booked jobs over time.</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">What's included</span><span class="addon-back-val">4 Reels per month · Script direction · Professional editing · Captions + hashtags · Delivered ready to post</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">Best paired with</span><span class="addon-back-val">Any package — amplifies your brand presence beyond just Google</span></div>
+        </div>
+      </div></div>
+      <div class="addon-flip"><div class="addon-flip-inner">
+        <div class="addon-front">
+          <div class="addon-front-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.4"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+          <div class="addon-front-name">Email &amp; SMS Follow-Up</div>
+          <div class="addon-front-hint">Tap to learn more</div>
+        </div>
+        <div class="addon-back">
+          <div class="addon-back-category">Automation</div>
+          <div class="addon-back-title">Email &amp; SMS Follow-Up</div>
+          <div class="addon-back-row"><span class="addon-back-label">Who it's for</span><span class="addon-back-val">Business owners getting inbound leads but losing them before they can respond. Speed-to-lead is everything in local business.</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">Why it works</span><span class="addon-back-val">Every new inquiry gets an instant, professional response — even while you're on the job. No lead slips through the cracks.</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">What's included</span><span class="addon-back-val">Automated email + SMS sequences · Immediate follow-up on form fills · Nurture sequence until booked · Setup + monthly management</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">Best paired with</span><span class="addon-back-val">Lead Engine or Growth Machine — turns inbound traffic into booked jobs automatically</span></div>
+        </div>
+      </div></div>
+      <div class="addon-flip"><div class="addon-flip-inner">
+        <div class="addon-front">
+          <div class="addon-front-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.4"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="13" y2="12"/></svg></div>
+          <div class="addon-front-name">Additional Pages</div>
+          <div class="addon-front-hint">Tap to learn more</div>
+        </div>
+        <div class="addon-back">
+          <div class="addon-back-category">Web Design</div>
+          <div class="addon-back-title">Additional Pages</div>
+          <div class="addon-back-row"><span class="addon-back-label">Who it's for</span><span class="addon-back-val">Business owners who offer multiple services or cover multiple cities and need a dedicated page for each.</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">Why it works</span><span class="addon-back-val">Each additional page targets a specific service or city, expanding how many customers can find you on Google.</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">What's included</span><span class="addon-back-val">Custom-designed page · SEO-optimized copy · Matching brand aesthetic · Connected to your existing site</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">Best paired with</span><span class="addon-back-val">Any package — each page added increases your ranking surface on Google</span></div>
+        </div>
+      </div></div>
+      <div class="addon-flip"><div class="addon-flip-inner">
+        <div class="addon-front">
+          <div class="addon-front-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.4"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
+          <div class="addon-front-name">Competitor Gap Analysis</div>
+          <div class="addon-front-hint">Tap to learn more</div>
+        </div>
+        <div class="addon-back">
+          <div class="addon-back-category">Reporting · Strategy</div>
+          <div class="addon-back-title">Competitor Gap Analysis</div>
+          <div class="addon-back-row"><span class="addon-back-label">Who it's for</span><span class="addon-back-val">Business owners who know competitors are outranking them but don't know exactly why or where.</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">Why it works</span><span class="addon-back-val">A clear picture of where competitors are stronger gives us a focused action plan to outrank them where it matters most.</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">What's included</span><span class="addon-back-val">Audit of top 3 local competitors · Review count + velocity · GBP completeness · Keyword gaps · 30-day priority action list</span></div>
+          <div class="addon-back-row"><span class="addon-back-label">Best paired with</span><span class="addon-back-val">Lead Engine or Growth Machine — used to sharpen strategy at the 60–90 day mark</span></div>
+        </div>
+      </div></div>
     </div>
-    <div class="prc-addons-grid">
-      <div class="prc-addon-item">
-        <div class="prc-addon-label">Short-Form Only</div>
-        <div class="prc-addon-price">$399<span>/mo</span></div>
-        <div class="prc-addon-desc">2 short-form vertical videos · Reels &amp; TikTok formatted · on-brand editing &amp; captions</div>
-      </div>
-      <div class="prc-addon-item">
-        <div class="prc-addon-label">YouTube Only</div>
-        <div class="prc-addon-price">$800<span>/mo</span></div>
-        <div class="prc-addon-desc">1 fully shot &amp; edited YouTube video · thumbnail · captions &amp; chapters</div>
-      </div>
-      <div class="prc-addon-item prc-addon-item--popular">
-        <div class="prc-addon-popular">Most Popular</div>
-        <div class="prc-addon-label" style="color:var(--gold)">Both Together</div>
-        <div class="prc-addon-price" style="background:linear-gradient(135deg,#ffffff 0%,#ede0c8 38%,#c9a870 65%,#b8996a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">$997<span style="-webkit-text-fill-color:var(--silver3);background:none;">/mo</span></div>
-        <div class="prc-addon-desc">2 short-form videos + 1 YouTube video · full editing · captions · thumbnail</div>
-      </div>
-    </div>
-    <p class="prc-note" style="margin-top:1rem;">Monthly add-ons pair with any shoot or standalone. <a href="#contact">Contact us</a> to get started.</p>
   </div>
 
-  <p class="prc-note">Base shoot starts at $2,200 (3 services min). <a href="#contact">Talk to us</a> to build your package.</p>
+  <!-- TWO CTAs -->
+  <div class="reveal" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2.5rem;">
+    <a href="#contact" class="btn-primary">Book a Free Discovery Call</a>
+    <a href="#contact" class="btn-ghost">Get a Free Audit →</a>
+  </div>
+
+  <p class="prc-note" style="margin-top:1.5rem;">Add-on pricing discussed on your discovery call. <a href="#contact">Let's build your custom package.</a></p>
 </div>
 
 </section></div><div class="sketch-connector" data-sk>
@@ -840,7 +771,7 @@ function prcSwitch(id){
   <path class="skh2" stroke-width="1.4" d="M44 88 C49 100, 57 103, 63 95"/>
 </svg>
 <span class="sk-label">why us</span>
-</div><div class="section-card"><section id="why"><div class="reveal" style="margin-bottom:2rem;"><div class="section-tag">Why SERA</div><h2 class="section-title">Built different,<br><em>on purpose.</em></h2></div><div class="why-inner"><div class="why-items reveal"><div class="why-item"><div class="why-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div><div class="why-item-title">Speed &amp; Precision</div><div class="why-item-desc">First draft in 48 hours. No templates, no shortcuts.</div></div></div><div class="why-item"><div class="why-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div><div><div class="why-item-title">Conversion-First</div><div class="why-item-desc">Every page is built to turn visitors into paying customers.</div></div></div><div class="why-item"><div class="why-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div><div><div class="why-item-title">Real Photography</div><div class="why-item-desc">No stock photos. We shoot your business — authenticity converts.</div></div></div><div class="why-item"><div class="why-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></div><div><div class="why-item-title">Ongoing Upkeep</div><div class="why-item-desc">Monthly care plans keep your site fresh and converting.</div></div></div></div><div class="why-metrics reveal reveal-delay-2"><div class="why-metric"><div class="why-metric-num">100%</div><div class="why-metric-label">Custom Design</div></div><div class="why-metric"><div class="why-metric-num">48h</div><div class="why-metric-label">First Draft</div></div><div class="why-metric"><div class="why-metric-num">3-in-1</div><div class="why-metric-label">Design + SEO + Content</div></div><div class="why-metric"><div class="why-metric-num">Local</div><div class="why-metric-label">Business Focus</div></div></div></div></section></div><div class="sketch-connector" data-sk>
+</div><div class="section-card"><section id="why"><div class="reveal" style="margin-bottom:2rem;"><div class="section-tag">Why SERA</div><h2 class="section-title">Everything your business needs<br><em>to get more jobs.</em></h2></div><div class="why-inner"><div class="why-items reveal"><div class="why-item"><div class="why-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div><div class="why-item-title">Results, Not Reports</div><div class="why-item-desc">Every deliverable is tied to one outcome — more booked jobs. Not vanity metrics, not impressions.</div></div></div><div class="why-item"><div class="why-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div><div><div class="why-item-title">Built for Local Business</div><div class="why-item-desc">Contractors, restaurants, salons, service businesses — if you rely on local customers, we know your market and how to reach them.</div></div></div><div class="why-item"><div class="why-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div><div><div class="why-item-title">Fully Done For You</div><div class="why-item-desc">You run the jobs. We run the marketing. No babysitting an agency, no learning new software — just results.</div></div></div><div class="why-item"><div class="why-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></div><div><div class="why-item-title">Guaranteed or Free</div><div class="why-item-desc">Lead Engine and Growth Machine clients get a 90-day lead guarantee. Results or we keep working at no charge.</div></div></div></div><div class="why-metrics reveal reveal-delay-2"><div class="why-metric"><div class="why-metric-num">90</div><div class="why-metric-label">Day Guarantee</div></div><div class="why-metric"><div class="why-metric-num">No</div><div class="why-metric-label">Long-Term Contracts</div></div><div class="why-metric"><div class="why-metric-num">100%</div><div class="why-metric-label">Done For You</div></div><div class="why-metric"><div class="why-metric-num">SoCal</div><div class="why-metric-label">Local Businesses</div></div></div></div></section></div><div class="sketch-connector" data-sk>
 <svg width="86" height="108" viewBox="0 0 86 108">
   <path class="skp"  stroke-width="1.8" d="M42 5 C46 14, 38 22, 44 34 C50 44, 38 52, 42 64 C46 74, 40 82, 42 96"/>
   <path class="skh1" stroke-width="1.6" d="M34 88 C38 97, 43 101, 52 95"/>
@@ -862,52 +793,53 @@ function prcSwitch(id){
 </div>
 <div class="faq-list reveal"><div class="faq-item">
 <div class="faq-q" onclick="toggleFaq(this)">
-<span class="faq-q-text">How long does it take to build my website?</span>
+<span class="faq-q-text">What exactly does SERA do?</span>
 <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M12 5v14M5 12h14"/></svg></span>
 </div>
-<div class="faq-a"><div class="faq-a-inner">Most landing pages and single-page sites are delivered within <strong style="color:var(--silver2)">5–7 business days</strong>. Multi-page sites typically take 2–3 weeks depending on content and revisions. We move fast without cutting corners — first draft is usually in your hands within 48 hours of receiving your content.</div></div>
+<div class="faq-a"><div class="faq-a-inner">We're a <strong style="color:var(--silver2)">lead generation partner for local businesses</strong> in Southern California. We build and manage the system that gets your business found on Google, trusted by customers, and consistently booked — through web design, Google Business Profile management, local SEO, content, and paid ads. Everything is done for you.</div></div>
 </div><div class="faq-item">
 <div class="faq-q" onclick="toggleFaq(this)">
-<span class="faq-q-text">Do I own my website once it's built?</span>
+<span class="faq-q-text">What's the difference between the three packages?</span>
 <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M12 5v14M5 12h14"/></svg></span>
 </div>
-<div class="faq-a"><div class="faq-a-inner"><strong style="color:var(--silver2)">Yes — 100%.</strong> Once your project is complete and paid, the site is entirely yours. We don't hold your files or domain hostage. You can take it anywhere you want, though most clients stick around for our monthly upkeep plans because it's just easier.</div></div>
+<div class="faq-a"><div class="faq-a-inner"><strong style="color:var(--silver2)">The Minimum</strong> is a one-time setup — website, Google Business Profile, and a review system to get you visible and credible fast. <strong style="color:var(--silver2)">The Lead Engine</strong> is our flagship monthly retainer where we actively manage and grow your inbound leads every month. <strong style="color:var(--silver2)">The Growth Machine</strong> layers paid ads, video content, and full automation on top for business owners ready to dominate their market. <a href="#packages">See all packages →</a></div></div>
+</div><div class="faq-item">
+<div class="faq-q" onclick="toggleFaq(this)">
+<span class="faq-q-text">Do I have to sign a long-term contract?</span>
+<span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M12 5v14M5 12h14"/></svg></span>
+</div>
+<div class="faq-a"><div class="faq-a-inner"><strong style="color:var(--silver2)">No contracts</strong> on The Lead Engine or Growth Machine — both are month-to-month. You stay because you're seeing results, not because you're locked in. The Minimum is a one-time project with no ongoing commitment unless you choose to add a retainer.</div></div>
+</div><div class="faq-item">
+<div class="faq-q" onclick="toggleFaq(this)">
+<span class="faq-q-text">How does the 90-day guarantee work?</span>
+<span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M12 5v14M5 12h14"/></svg></span>
+</div>
+<div class="faq-a"><div class="faq-a-inner">Lead Engine and Growth Machine clients are guaranteed a <strong style="color:var(--silver2)">measurable increase in inbound leads within 90 days of launch</strong>. If we don't hit that mark, we keep working at no additional charge until you do. No fine print, no excuses.</div></div>
+</div><div class="faq-item">
+<div class="faq-q" onclick="toggleFaq(this)">
+<span class="faq-q-text">How long does it take to see results?</span>
+<span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M12 5v14M5 12h14"/></svg></span>
+</div>
+<div class="faq-a"><div class="faq-a-inner">Most clients see movement in their Google rankings and inbound inquiries within <strong style="color:var(--silver2)">30–60 days</strong>. The full system compounds over time — the longer it runs, the stronger it gets. That's why we back it with a 90-day guarantee.</div></div>
 </div><div class="faq-item">
 <div class="faq-q" onclick="toggleFaq(this)">
 <span class="faq-q-text">What do I need to provide to get started?</span>
 <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M12 5v14M5 12h14"/></svg></span>
 </div>
-<div class="faq-a"><div class="faq-a-inner">Not much — that's the point of our discovery call. Generally helpful to have: your logo (if you have one), brand colors, any existing photos, and an idea of what you like. If you don't have photos yet, that's what our <strong style="color:var(--silver2)">brand photography packages</strong> are for. We guide you through everything.</div></div>
+<div class="faq-a"><div class="faq-a-inner">Very little — that's the point. A quick discovery call is all we need to get moving. If you have a logo and photos, great. If not, we handle that with our <strong style="color:var(--silver2)">Digital Growth Shoot</strong> add-on. We guide you through every step.</div></div>
 </div><div class="faq-item">
 <div class="faq-q" onclick="toggleFaq(this)">
-<span class="faq-q-text">What's included in monthly upkeep?</span>
+<span class="faq-q-text">Do I own everything once it's built?</span>
 <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M12 5v14M5 12h14"/></svg></span>
 </div>
-<div class="faq-a"><div class="faq-a-inner">Monthly upkeep covers text and image updates, security and performance monitoring, seasonal design refreshes, and priority support. Think of it as having a web team on retainer — you message us, we handle it. Plans start at <strong style="color:var(--silver2)">$59/mo</strong> depending on your package.</div></div>
-</div><div class="faq-item">
-<div class="faq-q" onclick="toggleFaq(this)">
-<span class="faq-q-text">Can you work with businesses outside Southern California?</span>
-<span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M12 5v14M5 12h14"/></svg></span>
-</div>
-<div class="faq-a"><div class="faq-a-inner"><strong style="color:var(--silver2)">Absolutely.</strong> Web design, content strategy, and video editing are fully remote. Brand photography requires an in-person shoot — we're based in Southern California so local clients get the most out of that service, but we're open to travel for the right project.</div></div>
+<div class="faq-a"><div class="faq-a-inner"><strong style="color:var(--silver2)">Yes — 100%.</strong> Your website, your Google profile, your content — everything we build belongs to you. We never hold your assets hostage. Most clients keep us on retainer because the results speak for themselves, not because they have to.</div></div>
 </div><div class="faq-item">
 <div class="faq-q" onclick="toggleFaq(this)">
 <span class="faq-q-text">How does the discovery call work?</span>
 <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M12 5v14M5 12h14"/></svg></span>
 </div>
-<div class="faq-a"><div class="faq-a-inner">It's a free 20–30 minute call — no pressure, no pitch. We go over your business, your goals, what you like and don't like, and which package makes the most sense for where you're at. By the end you'll have a clear picture of exactly what we'd build and what it costs. <a href="#contact">Book yours here.</a></div></div>
-</div><div class="faq-item">
-<div class="faq-q" onclick="toggleFaq(this)">
-<span class="faq-q-text">Do you offer payment plans?</span>
-<span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M12 5v14M5 12h14"/></svg></span>
-</div>
-<div class="faq-a"><div class="faq-a-inner">Yes. For larger projects we typically split into <strong style="color:var(--silver2)">50% upfront and 50% on delivery</strong>. Custom payment arrangements can be discussed on your discovery call — we want to make it work for you.</div></div>
-</div><div class="faq-item">
-<div class="faq-q" onclick="toggleFaq(this)">
-<span class="faq-q-text">What makes SERA different from other agencies?</span>
-<span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M12 5v14M5 12h14"/></svg></span>
-</div>
-<div class="faq-a"><div class="faq-a-inner">We don't do templates, we don't do cookie-cutter. Every site is built from scratch around your brand and your goals. We also combine web design, photography, and content creation under one roof — so everything is cohesive and on-brand from day one. You get a partner, not just a vendor.</div></div>
+<div class="faq-a"><div class="faq-a-inner">It's a free 20–30 minute call with no pressure. We look at your current online presence, show you exactly what's costing you leads, and walk you through which package fits where you're at. You leave with a clear plan — whether you work with us or not. <a href="#contact">Book yours here.</a></div></div>
+</div></div></div></div>
 </div></div>
 </div>
 </section></div>
@@ -925,7 +857,7 @@ function prcSwitch(id){
   <path class="skh2" stroke-width="1.5" d="M38 90 C44 103, 52 106, 58 97"/>
 </svg>
 <span class="sk-label">let's get started</span>
-</div><div class="section-card"><section id="cta"><h2 class="cta-title reveal">Ready to build<br><em>something great?</em></h2><p class="cta-sub reveal reveal-delay-1">No pressure, no pitch — just an honest conversation about what you need.</p><div class="cta-actions reveal reveal-delay-2"><a href="#contact" class="btn-primary">Start a Project</a><a href="#packages" class="btn-ghost">View Packages →</a></div></section></div><div class="section-card"><section id="contact"><div class="contact-inner"><div class="reveal"><div class="section-tag">Contact</div><h2 class="section-title" style="margin-bottom:1rem;">Let's <em>talk.</em></h2><p class="contact-desc">Tell us about your business and what you're looking for. We'll get back to you within 24 hours.</p><div class="contact-details"><div class="contact-detail"><div class="contact-detail-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><div class="contact-detail-label">Email</div><div class="contact-detail-value"><a id="contactEmail" href="#" style="color:var(--silver2);text-decoration:none;transition:color .3s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--silver2)'">info&#64;agencysera&#46;com</a></div></div></div><div class="contact-detail"><div class="contact-detail-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="contact-detail-label">Based In</div><div class="contact-detail-value">Southern California</div></div></div><div class="contact-detail"><div class="contact-detail-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="contact-detail-label">Response Time</div><div class="contact-detail-value">Within 24 hours</div></div></div></div></div><div class="contact-form-wrap reveal reveal-delay-1"><div class="contact-form-title">Start a Project</div><div class="form-row-2"><div><label>First Name</label><input type="text" id="cfFirst" placeholder="John"></div><div><label>Last Name</label><input type="text" id="cfLast" placeholder="Smith"></div></div><div class="form-group"><label>Business Name</label><input type="text" id="cfBiz" placeholder="Your Business"></div><div class="form-row-2"><div><label>Email</label><input type="email" id="cfEmail" placeholder="info@agencysera.com"></div><div><label>Phone</label><input type="tel" id="cfPhone" placeholder="(555) 000-0000"></div></div><div class="form-group"><label>Package Interest</label><select id="cfPackage"><option value="">Not sure yet</option><optgroup label="Bundle Packages"><option>Starter Bundle</option><option>Growth Bundle</option><option>Elite Bundle</option></optgroup><optgroup label="Web Design Only"><option>Single Page — Landing Page</option><option>Multi Page — Starter Site</option><option>Full Site</option></optgroup><optgroup label="Digital Growth Only"><option>Content Only</option><option>Content \+ Site Care</option></optgroup><option>Custom / Let's Talk</option></select></div><div class="form-group"><label>Tell us about your business</label><textarea id="cfMessage" placeholder="What does your business do? What are your goals?"></textarea></div><button type="button" class="form-submit-btn" id="submitBtn" onclick="submitContact()">Send Message →</button></div></div></section></div><div class="section-card section-card--footer"><footer><div class="footer-brand"><img src="data:image/webp;base64,UklGRhYEAABXRUJQVlA4IAoEAACQEgCdASpEAEQAPpE+mUkloyIhKlgLwLASCUAaSqM5K9tzz+zxGunh0IPoKTUSdvg+8tOuW7/O/8x+XlyCmZeLX5v/8n+P+AX9Rv9Z61XVKoEgWuOGx3Hd3jVDq8SYANRPP8zFXaVM9EjPjgx/cOj1OqqchOHrB5aKMPJciUqjiF2jbfYfDXTt1xsPFl5f0rgw5Mez+jfM2mu8219AAP77vwS8znO6oTAruufsTwFKNjJDw8MQWI2TbthjM4YcHhJ6eKj0dmWfj4VU9z4PdbbCuxINp0sKBkk+ygvLtuAY/gVobo5fs6vFL9DMoYCpfDdDf23Xnm92mWuxayNQZXX5Y6Q78abuxgsGuOc1ft/iBivrfPY4di5C6JAkJjWjxx9KZBTuG0vKwblTdv85aCBvHK7SQe40qMsh0Pgy5N96E4Pq33xaRA2fj8+r3UTkf3nsT7+n1b/oSX3gx0jlxaLXs+We1qMo/o6e/eGjVNxZ7ZGHlzQL5i3WK7fgleZcr6BgppVRSRrtPrKpoXaXBRDblTJMMrueblFneJIUwpCte/lJskaWVYoMhiOb8BkTZbv1W8TujFBC7WuD8hyprEiphgNNgahiqQFKTZARl/sKpxoSmjqMFljJnhsFfgM3rMCRSmTvgVsHhm3QBQW9BZqWK5o+iQ9a29JrxRu3dQA4RNc0rKAXcz+OHjEodzz6I4s4dnuDNY0RmR8zohDKKFWwt2i3T30sC7Z90SfOCjj6zSjxxs4p6OcUBOLyOZV+mjbN3eDMlSjex4gkJRpDfX86yHTb3QpgUMJnUEM6aslQNKVXyjqbwxjnN462Jb0qhmY6DGbnNEv4xgYWIkd7BHcZMn0oimQva4AUgS4V/UlpnYlB2Pj7XjxeKJtXvAes/8t+SOip8WhWhFTWdEwdQhi1IxPp6oOqvFPs3Ef3gixqDXjvzI+Kny9VetbMzHbE0oM/5YmE7xtTskaSXLG7g9NvSwc6vRXfVSVJYX3IBCGK1Y1+C2RXr9Cw+81FGxWrwazD6es+KnJU8ZA2H+N2paXvgtMUhwGn1ZioOaycFrYkaKjilyxWtwJUMCzN3+P6qmHN+2i2dp6Ry/wWYCyE0HVbzzPahmsRTfVg8VGeDwuZNtX8huQiDMJX3Harq/PReerXWbgLEeSj9z7ot3IO+VGoquG7Sv8Y2p5kD8rQRp6vT0y2gd+Xf1sH1iJig7O09di4OMAIstufsvMO7ak0HEOIYl3E8H/4xNNdUjKv2bZafTSGaLcHHTniemj/vvsfpjvOpq1vPrQQwcE70OlTxEQGcBHF5T85oGbYSdc6gpd3lgBhsUFyedytNW0a43ssfy5tZuKuDMTOK0rUA6cgNwdF7j+BiNDwAAAAAA==" alt="SERA" style="width:38px;height:38px;object-fit:cover;border-radius:50%;mix-blend-mode:lighten;opacity:.9;display:block;margin:0 auto .5rem;"> SER<span style="letter-spacing:0">A</span></div><div class="footer-links"><a href="#services">Services</a><a href="#packages">Packages</a><a href="#faq">FAQ</a><a href="#testimonials">Reviews</a><a href="#contact">Contact</a></div><div class="footer-copy"><a id="footerEmail" href="#" style="color:inherit;text-decoration:none;opacity:.5;">info&#64;agencysera&#46;com</a> &nbsp;·&nbsp; © 2025 SERA Agency</div></footer></div>
+</div><div class="section-card"><section id="cta"><h2 class="cta-title reveal">Ready to start<br><em>getting more jobs?</em></h2><p class="cta-sub reveal reveal-delay-1">Free 20-minute call. We'll audit your online presence and show you exactly what's costing you leads.</p><div class="cta-actions reveal reveal-delay-2"><a href="#contact" class="btn-primary">Start a Project</a><a href="#packages" class="btn-ghost">View Packages →</a></div></section></div><div class="section-card"><section id="contact"><div class="contact-inner"><div class="reveal"><div class="section-tag">Contact</div><h2 class="section-title" style="margin-bottom:1rem;">Let's <em>talk.</em></h2><p class="contact-desc">Tell us about your business and what you're looking for. We'll get back to you within 24 hours.</p><div class="contact-details"><div class="contact-detail"><div class="contact-detail-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><div class="contact-detail-label">Email</div><div class="contact-detail-value"><a id="contactEmail" href="#" style="color:var(--silver2);text-decoration:none;transition:color .3s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--silver2)'">info&#64;agencysera&#46;com</a></div></div></div><div class="contact-detail"><div class="contact-detail-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="contact-detail-label">Based In</div><div class="contact-detail-value">Southern California</div></div></div><div class="contact-detail"><div class="contact-detail-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="contact-detail-label">Response Time</div><div class="contact-detail-value">Within 24 hours</div></div></div></div></div><div class="contact-form-wrap reveal reveal-delay-1"><div class="contact-form-title">Start a Project</div><div class="form-row-2"><div><label>First Name</label><input type="text" id="cfFirst" placeholder="John"></div><div><label>Last Name</label><input type="text" id="cfLast" placeholder="Smith"></div></div><div class="form-group"><label>Business Name</label><input type="text" id="cfBiz" placeholder="Your Business"></div><div class="form-row-2"><div><label>Email</label><input type="email" id="cfEmail" placeholder="info@agencysera.com"></div><div><label>Phone</label><input type="tel" id="cfPhone" placeholder="(555) 000-0000"></div></div><div class="form-group"><label>Package Interest</label><select id="cfPackage"><option value="">Not sure yet</option><option>The Minimum (One-Time Setup)</option><option>The Lead Engine (Monthly)</option><option>The Growth Machine (Monthly)</option><optgroup label="Add-Ons"><option>Digital Growth Shoot</option><option>Meta Ads Management</option><option>Short-Form Video Reels</option><option>Email &amp; SMS Automation</option></optgroup><option>Not sure — Let's Talk</option></select></div><div class="form-group"><label>Tell us about your business</label><textarea id="cfMessage" placeholder="What does your business do? What are your goals?"></textarea></div><button type="button" class="form-submit-btn" id="submitBtn" onclick="submitContact()">Send Message →</button></div></div></section></div><div class="section-card section-card--footer"><footer><div class="footer-brand"><img src="data:image/webp;base64,UklGRhYEAABXRUJQVlA4IAoEAACQEgCdASpEAEQAPpE+mUkloyIhKlgLwLASCUAaSqM5K9tzz+zxGunh0IPoKTUSdvg+8tOuW7/O/8x+XlyCmZeLX5v/8n+P+AX9Rv9Z61XVKoEgWuOGx3Hd3jVDq8SYANRPP8zFXaVM9EjPjgx/cOj1OqqchOHrB5aKMPJciUqjiF2jbfYfDXTt1xsPFl5f0rgw5Mez+jfM2mu8219AAP77vwS8znO6oTAruufsTwFKNjJDw8MQWI2TbthjM4YcHhJ6eKj0dmWfj4VU9z4PdbbCuxINp0sKBkk+ygvLtuAY/gVobo5fs6vFL9DMoYCpfDdDf23Xnm92mWuxayNQZXX5Y6Q78abuxgsGuOc1ft/iBivrfPY4di5C6JAkJjWjxx9KZBTuG0vKwblTdv85aCBvHK7SQe40qMsh0Pgy5N96E4Pq33xaRA2fj8+r3UTkf3nsT7+n1b/oSX3gx0jlxaLXs+We1qMo/o6e/eGjVNxZ7ZGHlzQL5i3WK7fgleZcr6BgppVRSRrtPrKpoXaXBRDblTJMMrueblFneJIUwpCte/lJskaWVYoMhiOb8BkTZbv1W8TujFBC7WuD8hyprEiphgNNgahiqQFKTZARl/sKpxoSmjqMFljJnhsFfgM3rMCRSmTvgVsHhm3QBQW9BZqWK5o+iQ9a29JrxRu3dQA4RNc0rKAXcz+OHjEodzz6I4s4dnuDNY0RmR8zohDKKFWwt2i3T30sC7Z90SfOCjj6zSjxxs4p6OcUBOLyOZV+mjbN3eDMlSjex4gkJRpDfX86yHTb3QpgUMJnUEM6aslQNKVXyjqbwxjnN462Jb0qhmY6DGbnNEv4xgYWIkd7BHcZMn0oimQva4AUgS4V/UlpnYlB2Pj7XjxeKJtXvAes/8t+SOip8WhWhFTWdEwdQhi1IxPp6oOqvFPs3Ef3gixqDXjvzI+Kny9VetbMzHbE0oM/5YmE7xtTskaSXLG7g9NvSwc6vRXfVSVJYX3IBCGK1Y1+C2RXr9Cw+81FGxWrwazD6es+KnJU8ZA2H+N2paXvgtMUhwGn1ZioOaycFrYkaKjilyxWtwJUMCzN3+P6qmHN+2i2dp6Ry/wWYCyE0HVbzzPahmsRTfVg8VGeDwuZNtX8huQiDMJX3Harq/PReerXWbgLEeSj9z7ot3IO+VGoquG7Sv8Y2p5kD8rQRp6vT0y2gd+Xf1sH1iJig7O09di4OMAIstufsvMO7ak0HEOIYl3E8H/4xNNdUjKv2bZafTSGaLcHHTniemj/vvsfpjvOpq1vPrQQwcE70OlTxEQGcBHF5T85oGbYSdc6gpd3lgBhsUFyedytNW0a43ssfy5tZuKuDMTOK0rUA6cgNwdF7j+BiNDwAAAAAA==" alt="SERA" style="width:38px;height:38px;object-fit:cover;border-radius:50%;mix-blend-mode:lighten;opacity:.9;display:block;margin:0 auto .5rem;"> SER<span style="letter-spacing:0">A</span></div><div class="footer-links"><a href="#services">Services</a><a href="#packages">Packages</a><a href="#faq">FAQ</a><a href="#testimonials">Reviews</a><a href="#contact">Contact</a></div><div class="footer-copy"><a id="footerEmail" href="#" style="color:inherit;text-decoration:none;opacity:.5;">info&#64;agencysera&#46;com</a> &nbsp;·&nbsp; © 2025 SERA Agency</div></footer></div>
 
 <div class="ob-backdrop" id="obBackdrop" style="display:none">
 <div class="ob-modal" role="dialog" aria-modal="true"><button class="ob-close" id="obClose" aria-label="Close">✕</button><div class="ob-progress"><div class="ob-progress-dot done" id="obDot1"></div><div class="ob-progress-dot" id="obDot2"></div><div class="ob-progress-dot" id="obDot3"></div><div class="ob-progress-dot" id="obDot4"></div><div class="ob-progress-dot" id="obDot5"></div></div><!-- Step 1: Who are you --><div class="ob-step active" id="obStep1"><div class="ob-step-tag">Step 1 of 5 · Let's get acquainted</div><div class="ob-step-title">Tell us a bit<br><em>about you.</em></div><div class="ob-step-sub">We'll use this to personalize your experience and make sure we're a great fit before we ever hop on a call.</div><div class="ob-row-2"><div class="ob-field"><label>First Name</label><input type="text" id="obFirstName" placeholder="Jane"></div><div class="ob-field"><label>Last Name</label><input type="text" id="obLastName" placeholder="Smith"></div></div><div class="ob-field"><label>Business Name</label><input type="text" id="obBiz" placeholder="Your Business"></div><div class="ob-field"><label>Current Website Link <span style="opacity:.4;text-transform:none;letter-spacing:0">(or any site with your business info)</span></label><input type="url" id="obWebsite" placeholder="https://yourbusiness.com"></div><div class="ob-row-2"><div class="ob-field"><label>Email</label><input type="email" id="obEmail" placeholder="info@agencysera.com"></div><div class="ob-field"><label>Phone <span style="opacity:.4;text-transform:none;letter-spacing:0">(optional)</span></label><input type="tel" id="obPhone" placeholder="(555) 000-0000"></div></div><div class="ob-nav"><div></div><button class="ob-btn-next" onclick="obNext(1)">Next →</button></div></div><!-- Step 2: What do you need --><div class="ob-step" id="obStep2"><div class="ob-step-tag">Step 2 of 5 · Your vision</div><div class="ob-step-title">What are you<br><em>looking to build?</em></div><div class="ob-step-sub">Select everything that applies — we'll use this to recommend the right package for your goals.</div><div class="ob-field"><label>Services you're interested in</label><div class="ob-chips"><div class="ob-chip" onclick="obToggleChip(this)">Custom Website</div><div class="ob-chip" onclick="obToggleChip(this)">Landing Page</div><div class="ob-chip" onclick="obToggleChip(this)">Brand Photography</div><div class="ob-chip" onclick="obToggleChip(this)">Short Form Videos</div><div class="ob-chip" onclick="obToggleChip(this)">Content Strategy</div><div class="ob-chip" onclick="obToggleChip(this)">Monthly Upkeep</div><div class="ob-chip" onclick="obToggleChip(this)">Full Bundle</div><div class="ob-chip" onclick="obToggleChip(this)">Not sure yet</div></div></div><div class="ob-field" style="margin-top:1rem"><label>Tell us about your business</label><textarea id="obBizDesc" placeholder="What do you do, who do you serve, and what makes you different?"></textarea></div><div class="ob-nav"><button class="ob-btn-back" onclick="obBack(2)">← Back</button><button class="ob-btn-next" onclick="obNext(2)">Next →</button></div></div><!-- Step 3: Goals --><div class="ob-step" id="obStep3"><div class="ob-step-tag">Step 3 of 5 · Your goals</div><div class="ob-step-title">What do you want<br><em>to achieve?</em></div><div class="ob-step-sub">Pick your primary goal. This helps us make sure every decision we make moves the needle for your business.</div><div class="ob-goal-card" onclick="obSelectGoal(this)"><div class="ob-goal-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" width="22" height="22"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div><div class="ob-goal-card-title">Generate more leads & sales</div><div class="ob-goal-card-desc">Turn visitors into paying customers with a high-converting online presence.</div></div></div><div class="ob-goal-card" onclick="obSelectGoal(this)"><div class="ob-goal-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" width="22" height="22"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div><div><div class="ob-goal-card-title">Build brand awareness & credibility</div><div class="ob-goal-card-desc">Look the part, tell your story, and make a lasting first impression online.</div></div></div><div class="ob-goal-card" onclick="obSelectGoal(this)"><div class="ob-goal-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" width="22" height="22"><rect x="2" y="2" width="20" height="20" rx="4"/><polygon points="10,8 16,12 10,16" fill="var(--gold)" stroke="none"/></svg></div><div><div class="ob-goal-card-title">Grow on social media</div><div class="ob-goal-card-desc">Consistent, professional content that builds your audience and drives engagement.</div></div></div><div class="ob-goal-card" onclick="obSelectGoal(this)"><div class="ob-goal-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" width="22" height="22"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div><div class="ob-goal-card-title">Launch or rebrand my business</div><div class="ob-goal-card-desc">Starting fresh or leveling up — we'll build your complete digital foundation.</div></div></div><div class="ob-nav"><button class="ob-btn-back" onclick="obBack(3)">← Back</button><button class="ob-btn-next" onclick="obNext(3)">Next →</button></div></div><!-- Step 4: Timeline & Budget --><div class="ob-step" id="obStep4"><div class="ob-step-tag">Step 4 of 5 · Timeline & investment</div><div class="ob-step-title">When do you want<br><em>to get started?</em></div><div class="ob-step-sub">No pressure — we just want to make sure we can give your project the attention it deserves.</div><div class="ob-field"><label>Ideal timeline</label><div class="ob-timeline"><div class="ob-timeline-opt" onclick="obSelectTimeline(this)"><div class="ob-timeline-opt-label">ASAP</div><div class="ob-timeline-opt-sub">Ready to go now</div></div><div class="ob-timeline-opt" onclick="obSelectTimeline(this)"><div class="ob-timeline-opt-label">1–2 Weeks</div><div class="ob-timeline-opt-sub">Getting ducks in a row</div></div><div class="ob-timeline-opt" onclick="obSelectTimeline(this)"><div class="ob-timeline-opt-label">This Month</div><div class="ob-timeline-opt-sub">Planning ahead</div></div><div class="ob-timeline-opt" onclick="obSelectTimeline(this)"><div class="ob-timeline-opt-label">Just Exploring</div><div class="ob-timeline-opt-sub">No rush, gathering info</div></div></div></div><div class="ob-field" style="margin-top:1.4rem"><label>Estimated budget</label><div class="ob-budget-wrap"><div class="ob-budget-selected" id="obBudgetDisplay">$500 – $1,000</div><input type="range" class="ob-range" id="obBudgetRange" min="0" max="5" value="1" oninput="obUpdateBudget(this.value)"><div class="ob-budget-labels"><span>$299</span><span>$500</span><span>$1k</span><span>$2k</span><span>$3k+</span><span>Custom</span></div></div></div><div class="ob-nav"><button class="ob-btn-back" onclick="obBack(4)">← Back</button><button class="ob-btn-next" onclick="obNext(4)">Next →</button></div></div><!-- Step 5: Schedule call --><div class="ob-step" id="obStep5"><div class="ob-step-tag">Step 5 of 5 · Lock it in</div><div class="ob-step-title">Let's schedule<br><em>your free call.</em></div><div class="ob-step-sub">This is a no-pressure discovery call — 20–30 minutes to go over your goals, walk through packages, and make sure we're the right fit for each other.</div><div class="ob-field"><label>Preferred days</label><div class="ob-chips"><div class="ob-chip" onclick="obToggleChip(this)">Monday</div><div class="ob-chip" onclick="obToggleChip(this)">Tuesday</div><div class="ob-chip" onclick="obToggleChip(this)">Wednesday</div><div class="ob-chip" onclick="obToggleChip(this)">Thursday</div><div class="ob-chip" onclick="obToggleChip(this)">Friday</div><div class="ob-chip" onclick="obToggleChip(this)">Weekend</div></div></div><div class="ob-field" style="margin-top:.8rem"><label>Preferred time</label><div class="ob-chips"><div class="ob-chip" onclick="obToggleChip(this)">Morning (9am–12pm)</div><div class="ob-chip" onclick="obToggleChip(this)">Afternoon (12pm–5pm)</div><div class="ob-chip" onclick="obToggleChip(this)">Evening (5pm–8pm)</div></div></div><div class="ob-field" style="margin-top:.8rem"><label>Anything else you'd like us to know?</label><textarea id="obNotes" placeholder="Questions, special requests, or context that would help us prepare…"></textarea></div><div class="ob-nav"><button class="ob-btn-back" onclick="obBack(5)">← Back</button><button class="ob-btn-next" onclick="obSubmit()">Book My Call ✦</button></div></div><div class="ob-step" id="obSuccess"><div class="ob-success"><div class="ob-success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" width="28" height="28"><polyline points="20 6 9 17 4 12"/></svg></div><div class="ob-success-title">You're all set, <em id="obSuccessName">friend</em>.</div><div class="ob-success-sub">We've received your info and will reach out within 24 hours to confirm your call. Get ready to build something amazing.</div><div class="ob-success-detail">✦ Expect a reply within 24 hours</div></div></div></div>
@@ -935,6 +867,44 @@ function prcSwitch(id){
   var e = 'info' + '@' + 'agencysera.com';
   var els = document.querySelectorAll('#contactEmail,#footerEmail');
   els.forEach(function(a){ a.href = 'mailto:' + e; });
+})();
+</script>
+<script>
+(function(){
+  var dot=document.getElementById('cur-dot');
+  var ring=document.getElementById('cur-ring');
+  if(!dot||!ring||matchMedia('(hover:none)').matches)return;
+  var mx=-200,my=-200,rx=-200,ry=-200,dotW=7,dotH=7;
+  document.addEventListener('mousemove',function(e){
+    mx=e.clientX;my=e.clientY;
+    dot.style.transform='translate3d('+(mx-dotW/2)+'px,'+(my-dotH/2)+'px,0)';
+  },{passive:true});
+  function loop(){
+    rx+=(mx-rx)*.18;ry+=(my-ry)*.18;
+    ring.style.transform='translate3d('+(rx-14)+'px,'+(ry-14)+'px,0)';
+    requestAnimationFrame(loop);
+  }
+  loop();
+  var hSel='a,button,.prc-btn,.pkg-cta,.nav-tab,.dock-tab,.faq-q,.service-row,.prc-card,.why-item,.testimonial-card,.ob-chip,.ob-goal-card,.ob-timeline-opt,.guarantee-banner-pill,.addon-flip';
+  document.addEventListener('mouseover',function(e){if(e.target.closest(hSel)){document.body.classList.add('cur-hover');dotW=9;dotH=9;}});
+  document.addEventListener('mouseout',function(e){if(e.target.closest(hSel)){document.body.classList.remove('cur-hover');dotW=7;dotH=7;}});
+  document.addEventListener('mousedown',function(e){
+    document.body.classList.add('cur-click');
+    var b=document.createElement('div');b.className='cur-burst';
+    b.style.left=e.clientX+'px';b.style.top=e.clientY+'px';
+    document.body.appendChild(b);
+    setTimeout(function(){if(b.parentNode)b.parentNode.removeChild(b);},520);
+  });
+  document.addEventListener('mouseup',function(){document.body.classList.remove('cur-click');});
+  document.addEventListener('mouseleave',function(){dot.style.opacity='0';ring.style.opacity='0';});
+  document.addEventListener('mouseenter',function(){dot.style.opacity='1';ring.style.opacity='1';});
+})();
+</script>
+<script>
+(function(){
+  document.querySelectorAll('.addon-flip').forEach(function(card){
+    card.addEventListener('click',function(){ card.classList.toggle('flipped'); });
+  });
 })();
 </script>
 <script>
